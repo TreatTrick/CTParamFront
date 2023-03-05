@@ -2,19 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import SignIn from './UI/Login';
+import SignIn from './UI/login';
+import InfoFilling from './UI/infoFilling';
 import {createBrowserRouter, redirect, RouterProvider} from "react-router-dom";
 
 const router = createBrowserRouter([
     {
       path: "/",
-      element:<SignIn/>,
       children:[
+        {
+          index: true,
+          element: <InfoFilling/>
+        },
         {
             path:"auth/",
             children:[
               {
-                index: true,
                 path:"login",
                 element:<SignIn/>,
               }
@@ -26,7 +29,7 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
-);
+)
 root.render(
   <React.StrictMode>
     <RouterProvider router={router}/>
