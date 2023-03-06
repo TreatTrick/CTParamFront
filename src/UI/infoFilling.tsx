@@ -89,9 +89,7 @@ export default function InfoFilling(){
 
     const token = localStorage.getItem('token');
     if(token){
-        return (
-            <MainPage/>
-        );
+        return <MainPage/>
     }
     else{
         return <Navigate to = 'auth/login'/>
