@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,6 +12,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router';
+
+interface stateDiscription{
+  hasError: boolean,
+  errorString: string,
+}
 
 function Copyright(props: any) {
   return (
@@ -28,7 +34,8 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignIn() {
-
+  const [accountState, setAccountState] = useState<stateDiscription>({hasError: false, errorString: ''});
+  const [passwordSate, setPasswordState] = useState<stateDiscription>({hasError: false, errorString: ''});
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -38,6 +45,17 @@ export default function SignIn() {
       email: data.get('account'),
       password: data.get('password'),
     });
+    let email = data.get('account');
+    let password = data.get('password');
+    if(!email){
+      setAccountState({hasError: true, errorString: '账号不能为空'});
+    }
+    if(!password){
+      setPasswordState({hasError: true, errorString: '密码不能为空'});
+    }
+    if(!email || !password){
+        return;
+    }
     localStorage.setItem('token', '233456');
     navigate('/');
   };
@@ -61,6 +79,21 @@ export default function SignIn() {
             登陆
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            { accountState.hasError ?
+              <TextField
+              error
+              margin="normal"
+              required
+              fullWidth
+              id="account"
+              label="账号"
+              name="account"
+              autoComplete="account"
+              autoFocus
+              helperText={accountState.errorString}
+              onChange={() => setAccountState({hasError: false, errorString: ''})}
+            />
+            :
             <TextField
               margin="normal"
               required
@@ -70,7 +103,24 @@ export default function SignIn() {
               name="account"
               autoComplete="account"
               autoFocus
+            /> }     
+            {
+              passwordSate.hasError
+              ?
+              <TextField
+              error
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="密码"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              helperText={passwordSate.errorString}
+              onChange={() => setPasswordState({hasError: false, errorString: ''})}
             />
+             :
             <TextField
               margin="normal"
               required
@@ -81,6 +131,8 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
+            }
+            
             {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
