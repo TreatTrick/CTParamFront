@@ -5,6 +5,10 @@ import reportWebVitals from './reportWebVitals';
 import SignIn from './UI/login';
 import InfoFilling from './UI/infoFilling';
 import {createBrowserRouter, redirect, RouterProvider} from "react-router-dom";
+import DashBoard from './UI/dashBoard';
+import ErrorPage from './UI/errorPage';
+import Copyright from './UI/copyRight';
+import { Typography } from '@mui/material';
 
 const router = createBrowserRouter([
     {
@@ -23,6 +27,29 @@ const router = createBrowserRouter([
               }
             ],
         },
+        {
+          path:"admin/", 
+          element:<DashBoard/>,        
+          children:[
+            {
+              errorElement:<ErrorPage/>,
+              children:[
+                {
+                  path:"usermanage",  
+                  element:<Typography>usermanage</Typography>          
+                },
+                {
+                  path:"content",
+                  element:<Typography>content</Typography>
+                },
+                {
+                  path:"account",
+                  element:<Typography>account</Typography>
+                }
+              ],
+            },
+          ],
+        }
       ],
     },
   ]);
