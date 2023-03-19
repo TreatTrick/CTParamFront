@@ -7,6 +7,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import {useNavigate } from 'react-router';
 import { List } from '@mui/material';
+import ViewListIcon from '@mui/icons-material/ViewList';
 
 export default function DrawerListItems(){
     const [selectedIndex, setSelectedIndex] = React.useState<number| undefined>();
@@ -35,15 +36,23 @@ export default function DrawerListItems(){
                 </ListItemButton >  
                 <ListItemButton 
                     selected = {selectedIndex === 1}
-                    onClick = {(event) => handleListItemClick(event, 1, 'content')}>
+                    onClick = {(event) => handleListItemClick(event, 1, 'check')}>
                 <ListItemIcon>
                     <ListAltIcon/>
+                </ListItemIcon>
+                <ListItemText primary="内容审核" />
+                </ListItemButton> 
+                <ListItemButton 
+                    selected = {selectedIndex === 2}
+                    onClick = {(event) => handleListItemClick(event, 2, 'content')}>
+                <ListItemIcon>
+                    <ViewListIcon/>
                 </ListItemIcon>
                 <ListItemText primary="内容查寻" />
                 </ListItemButton>  
                 <ListItemButton 
-                    selected = {selectedIndex === 2}
-                    onClick = {(event) => handleListItemClick(event, 2, 'account')}>
+                    selected = {selectedIndex === 3}
+                    onClick = {(event) => handleListItemClick(event, 3, 'account')}>
                 <ListItemIcon>
                     <ManageAccountsIcon/>
                 </ListItemIcon>

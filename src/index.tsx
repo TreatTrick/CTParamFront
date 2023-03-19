@@ -9,6 +9,7 @@ import DashBoard from './UI/dashBoard';
 import ErrorPage from './UI/errorPage';
 import Copyright from './UI/copyRight';
 import { Typography } from '@mui/material';
+import CustomizedTables from './UI/dashboardChildren/content';
 
 const router = createBrowserRouter([
     {
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
                 },
                 {
                   path:"content",
-                  element:<Typography>content</Typography>
+                  element:<CustomizedTables/>
                 },
                 {
                   path:"account",
