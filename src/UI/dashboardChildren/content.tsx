@@ -141,7 +141,7 @@ export default function StickyHeadTable() {
       <Box margin='10px' sx={{ width: '50%', marginLeft: 'auto' }}>
         <SearchBar onSearch={onSearch} />
       </Box>
-      <TableContainer sx={{ maxHeight: '100%' }}>
+      <TableContainer sx={{ maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <StyledTableRow>
@@ -196,7 +196,7 @@ export default function StickyHeadTable() {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[5, 25, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}

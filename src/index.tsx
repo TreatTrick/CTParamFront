@@ -37,11 +37,15 @@ const router = createBrowserRouter([
               children:[
                 {
                   path:"usermanage",  
-                  element:<Typography>usermanage</Typography>          
+                  element:<CustomizedTables/>        
+                },
+                {
+                  path:"verify",  
+                  element:<Typography>verify</Typography>          
                 },
                 {
                   path:"content",
-                  element:<CustomizedTables/>
+                  element:<Typography>content</Typography>
                 },
                 {
                   path:"account",

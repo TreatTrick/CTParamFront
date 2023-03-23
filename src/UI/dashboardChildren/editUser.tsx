@@ -39,16 +39,24 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, open, onClose }) 
     onClose();
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      handleSave();
+    } else if (event.key === 'Escape') {
+      onClose();
+    }
+  };
+
   return (
     <ThemeProvider theme={mdTheme}>
-        <Dialog open={open} onClose={onClose} maxWidth='xs' fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth='xs' fullWidth onKeyDown={handleKeyDown}>
         <DialogTitle sx={{backgroundColor: mdTheme.palette.primary.light, color: mdTheme.palette.common.white}}>编辑用户</DialogTitle>
         <DialogContent style={{height: '400px'}}>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="space-between" sx={{margin: 2}}>
         <TextField label="姓名" value={name} onChange={handleNameChange} style={{width: '100%', marginBottom: '20px'}} />
         <TextField label="账户" value={account} onChange={handleAccountChange} style={{width: '100%', marginBottom: '20px'}} />
         <TextField label="电话" value={telephone} onChange={handleTelephoneChange} style={{width: '100%', marginBottom: '20px'}} />
-        <TextField label="密码" value={password} onChange={handlePasswordChange} style={{width: '100%', marginBottom: '20px'}} />
+        <TextField label="新密码（不输入则保持原密码不变）" value={password} onChange={handlePasswordChange} style={{width: '100%', marginBottom: '20px'}} />
         </Box>
         </DialogContent>
         <DialogActions>

@@ -36,7 +36,7 @@ export default function DrawerListItems(){
                 </ListItemButton >  
                 <ListItemButton 
                     selected = {selectedIndex === 1}
-                    onClick = {(event) => handleListItemClick(event, 1, 'check')}>
+                    onClick = {(event) => handleListItemClick(event, 1, 'verify')}>
                 <ListItemIcon>
                     <ListAltIcon/>
                 </ListItemIcon>
