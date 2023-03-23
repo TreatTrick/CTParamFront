@@ -12,6 +12,7 @@ import { Box, Button, Toolbar } from '@mui/material';
 import SearchBar from './searchBar';
 import { User } from '../../functionality/interactWithBackEnd';
 import EditUserDialog from './editUser';
+import DeleteUserDialog from './deleteUser';
 
 
 
@@ -44,20 +45,20 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'id', label: 'id', minWidth: 170 },
-  { id: 'name', label: 'name', minWidth: 100 },
+  { id: 'id', label: 'id', minWidth: 170,},
+  { id: 'name', label: 'name', minWidth: 170 },
   {
     id: 'account',
     label: 'account',
     minWidth: 170,
-    align: 'right',
+    align:'right',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'telephone',
     label: 'telephone',
     minWidth: 170,
-    align: 'right',
+    align:'right',
     format: (value: number) => value.toLocaleString('en-US'),
   },
 ];
@@ -91,7 +92,7 @@ const rows = [
 
 export default function StickyHeadTable() {
 
-  const [editUser, setEdituser] = React.useState<User>({id: "id", name: "name", account:"account", telephone: "telephone"});
+  const [selectedUser, setSelecteduser] = React.useState<User>({id: "id", name: "name", account:"account", telephone: "telephone"});
   const [editOpen, setEditOpen] = React.useState<boolean>(false);
 
   const [page, setPage] = React.useState(0);
@@ -107,26 +108,37 @@ export default function StickyHeadTable() {
   };
 
   const openEditUserDialog = (user: User) =>{
-    setEdituser(user);
+    setSelecteduser(user);
     setEditOpen(true);
   };
+
+const [deleteOpen, setDeleteOpen] = React.useState<boolean>(false);
+
+const openDeleteUserDialog = (user: User) =>{
+  setSelecteduser(user);
+  setDeleteOpen(true);
+};
 
   const onSearch = (keyWord: string) => {
     
   };
 
+  const deleteUser = ()=>{
+
+  };
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <Box margin='10px'>
+      <Box margin='10px' sx={{width:'50%', marginLeft:'auto'}}>
         <SearchBar onSearch={onSearch}/>
-      </Box>
+      </Box>           
       <TableContainer sx={{ maxHeight: '100%' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <StyledTableRow>
               {columns.map((column) => (
                 <StyledTableCell
-                  align='center'
+                  align={column.align}
                   key={column.id}
                 >
                   {column.label}
@@ -134,7 +146,7 @@ export default function StickyHeadTable() {
               ))}
               <StyledTableCell 
                 key={columns.length}
-                align='center'
+                align='right'
               > 
                 operation
               </StyledTableCell>
@@ -157,18 +169,19 @@ export default function StickyHeadTable() {
                       })}
                       <StyledTableCell padding='none'
                           key={columns.length}
-                          align='center'
+                          align='right'
                       >
                           <Box margin='0'>                           
                               <Button type='button' onClick={() => openEditUserDialog(row)}>
-                                  Edit
+                                  编辑
                               </Button>
-                              <Button type='button' color='error'>
-                                  delete
+                              <Button type='button' color='error' onClick={() => openDeleteUserDialog(row)}>
+                                  删除
                               </Button>
                           </Box>
                       </StyledTableCell>
                   </StyledTableRow>
+                 
               ))}
           </TableBody>
         </Table>
@@ -182,7 +195,8 @@ export default function StickyHeadTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <EditUserDialog user={editUser} open={editOpen} onClose={()=>{setEditOpen(false)}}></EditUserDialog>
+      <EditUserDialog key={selectedUser.id} user={selectedUser} open={editOpen} onClose={()=>{setEditOpen(false)}}></EditUserDialog>
+      <DeleteUserDialog open={deleteOpen} handleClose={() => setDeleteOpen(false)} handleDelete={deleteUser}></DeleteUserDialog>
     </Paper>
   );
 }
