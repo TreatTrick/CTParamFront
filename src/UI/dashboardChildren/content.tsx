@@ -9,6 +9,9 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 import { Box, Button, Toolbar } from '@mui/material';
+import SearchBar from './searchBar';
+import { User } from '../../functionality/interactWithBackEnd';
+import EditUserDialog from './editUser';
 
 
 
@@ -33,7 +36,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density';
+  id: 'id' | 'name' | 'account' | 'telephone';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -41,68 +44,56 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { id: 'id', label: 'id', minWidth: 170 },
+  { id: 'name', label: 'name', minWidth: 100 },
   {
-    id: 'population',
-    label: 'Population',
+    id: 'account',
+    label: 'account',
     minWidth: 170,
     align: 'right',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
+    id: 'telephone',
+    label: 'telephone',
     minWidth: 170,
     align: 'right',
     format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toFixed(2),
   },
 ];
 
-interface Data {
-  name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
-}
-
 function createData(
+  id: string,
   name: string,
-  code: string,
-  population: number,
-  size: number,
-): Data {
-  const density = population / size;
-  return { name, code, population, size, density };
+  account: string,
+  telephone: string | undefined,
+): User {
+  return { id, name, account, telephone };
 }
 
 const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
+  createData('India', 'IN', '1324171354', '3287263'),
+  createData('China', 'CN', '1403500365', '9596961'),
+  createData('Italy', 'IT', '60483973', '301340'),
+  createData('United States', 'US', '327167434', '9833520'),
+  createData('Canada', 'CA', '37602103', '9984670'),
+  createData('Australia', 'AU', '25475400', '7692024'),
+  createData('Germany', 'DE', '83019200', '357578'),
+  createData('Ireland', 'IE', '4857000', '70273'),
+  createData('Mexico', 'MX', '126577691', '1972550'),
+  createData('Japan', 'JP', '126317000', '377973'),
+  createData('France', 'FR', '67022000', '640679'),
+  createData('United Kingdom', 'GB', '67545757', '242495'),
+  createData('Russia', 'RU', '146793744', '17098246'),
+  createData('Nigeria', 'NG', '200962417', '923768'),
+  createData('Brazil', 'BR', '210147125', '8515767'),
 ];
 
 export default function StickyHeadTable() {
+
+  const [editUser, setEdituser] = React.useState<User>({id: "id", name: "name", account:"account", telephone: "telephone"});
+  const [editOpen, setEditOpen] = React.useState<boolean>(false);
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -115,17 +106,28 @@ export default function StickyHeadTable() {
     setPage(0);
   };
 
+  const openEditUserDialog = (user: User) =>{
+    setEdituser(user);
+    setEditOpen(true);
+  };
+
+  const onSearch = (keyWord: string) => {
+    
+  };
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer>
+      <Box margin='10px'>
+        <SearchBar onSearch={onSearch}/>
+      </Box>
+      <TableContainer sx={{ maxHeight: '100%' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <StyledTableRow>
               {columns.map((column) => (
                 <StyledTableCell
+                  align='center'
                   key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
                 </StyledTableCell>
@@ -142,7 +144,7 @@ export default function StickyHeadTable() {
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
-                  <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                       {columns.map((column) => {
                           const value = row[column.id];
                           return (
@@ -157,11 +159,8 @@ export default function StickyHeadTable() {
                           key={columns.length}
                           align='center'
                       >
-                          <Box margin='0'>
-                              <Button type='button'>
-                                  accept
-                              </Button>
-                              <Button type='button'>
+                          <Box margin='0'>                           
+                              <Button type='button' onClick={() => openEditUserDialog(row)}>
                                   Edit
                               </Button>
                               <Button type='button' color='error'>
@@ -183,6 +182,7 @@ export default function StickyHeadTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      <EditUserDialog user={editUser} open={editOpen} onClose={()=>{setEditOpen(false)}}></EditUserDialog>
     </Paper>
   );
 }

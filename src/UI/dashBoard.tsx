@@ -20,6 +20,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Copyright from './copyRight';
 import { Outlet } from 'react-router';
 import DrawerListItems from './drawerList';
+import SearchBar from './dashboardChildren/searchBar';
+import { User } from '../functionality/interactWithBackEnd';
 
 const drawerWidth: number = 240;
 
@@ -79,6 +81,17 @@ function DashboardContent() {
     setOpen(!open);
   };
 
+const [users, setUsers] = React.useState<User[]>([]);
+
+React.useEffect(() => {
+    
+  }, []);
+
+  
+  const onSearch = (searchWord: string) =>{
+
+  };
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -136,7 +149,8 @@ function DashboardContent() {
                 ? theme.palette.grey[100]
                 : theme.palette.grey[900],
             flexGrow: 1,
-            height: '100vh',
+            height: '100%',
+            width: '100%',
             overflow: 'auto',
           }}
         >
