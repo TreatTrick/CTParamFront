@@ -57,7 +57,6 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, open, onClose }) 
         </DialogActions>
         </Dialog>
     </ThemeProvider>
-    
   );
 };
 

@@ -12,29 +12,29 @@ import { Box, Button, Toolbar } from '@mui/material';
 import SearchBar from './searchBar';
 import { User } from '../../functionality/interactWithBackEnd';
 import EditUserDialog from './editUser';
-import DeleteUserDialog from './deleteUser';
+import DeleteUserPopover from './deleteUserPopup';
 
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.info.main,
-      color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    },
-  }));
-  
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: '#fafafa',
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.info.main,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: '#fafafa',
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 interface Column {
   id: 'id' | 'name' | 'account' | 'telephone';
@@ -45,20 +45,20 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'id', label: 'id', minWidth: 170,},
+  { id: 'id', label: 'id', minWidth: 170, },
   { id: 'name', label: 'name', minWidth: 170 },
   {
     id: 'account',
     label: 'account',
     minWidth: 170,
-    align:'right',
+    align: 'right',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'telephone',
     label: 'telephone',
     minWidth: 170,
-    align:'right',
+    align: 'right',
     format: (value: number) => value.toLocaleString('en-US'),
   },
 ];
@@ -92,8 +92,9 @@ const rows = [
 
 export default function StickyHeadTable() {
 
-  const [selectedUser, setSelecteduser] = React.useState<User>({id: "id", name: "name", account:"account", telephone: "telephone"});
+  const [selectedUser, setSelecteduser] = React.useState<User>({ id: "id", name: "name", account: "account", telephone: "telephone" });
   const [editOpen, setEditOpen] = React.useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -107,31 +108,39 @@ export default function StickyHeadTable() {
     setPage(0);
   };
 
-  const openEditUserDialog = (user: User) =>{
+  const openEditUserDialog = (user: User) => {
     setSelecteduser(user);
     setEditOpen(true);
   };
 
-const [deleteOpen, setDeleteOpen] = React.useState<boolean>(false);
+  const [deleteOpen, setDeleteOpen] = React.useState<boolean>(false);
 
-const openDeleteUserDialog = (user: User) =>{
-  setSelecteduser(user);
-  setDeleteOpen(true);
-};
-
-  const onSearch = (keyWord: string) => {
-    
+  const openDeleteUserDialog = (e:React.MouseEvent<HTMLButtonElement>, user: User) => {
+    setSelecteduser(user);
+    setAnchorEl(e.currentTarget);
+    setDeleteOpen(true);
   };
 
-  const deleteUser = ()=>{
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    setDeleteOpen(false);
+  };
+
+  const handleDeleteUser = () => {
+    console.log('User deleted');
+    setAnchorEl(null);
+    setDeleteOpen(false);
+  };
+
+  const onSearch = (keyWord: string) => {
 
   };
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <Box margin='10px' sx={{width:'50%', marginLeft:'auto'}}>
-        <SearchBar onSearch={onSearch}/>
-      </Box>           
+      <Box margin='10px' sx={{ width: '50%', marginLeft: 'auto' }}>
+        <SearchBar onSearch={onSearch} />
+      </Box>
       <TableContainer sx={{ maxHeight: '100%' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -144,10 +153,10 @@ const openDeleteUserDialog = (user: User) =>{
                   {column.label}
                 </StyledTableCell>
               ))}
-              <StyledTableCell 
+              <StyledTableCell
                 key={columns.length}
                 align='right'
-              > 
+              >
                 operation
               </StyledTableCell>
             </StyledTableRow>
@@ -156,32 +165,32 @@ const openDeleteUserDialog = (user: User) =>{
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
-                  <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                      {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                              <StyledTableCell key={column.id} align={column.align}>
-                                  {column.format && typeof value === 'number'
-                                      ? column.format(value)
-                                      : value}
-                              </StyledTableCell>
-                          );
-                      })}
-                      <StyledTableCell padding='none'
-                          key={columns.length}
-                          align='right'
-                      >
-                          <Box margin='0'>                           
-                              <Button type='button' onClick={() => openEditUserDialog(row)}>
-                                  编辑
-                              </Button>
-                              <Button type='button' color='error' onClick={() => openDeleteUserDialog(row)}>
-                                  删除
-                              </Button>
-                          </Box>
+                <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <StyledTableCell key={column.id} align={column.align}>
+                        {column.format && typeof value === 'number'
+                          ? column.format(value)
+                          : value}
                       </StyledTableCell>
-                  </StyledTableRow>
-                 
+                    );
+                  })}
+                  <StyledTableCell padding='none'
+                    key={columns.length}
+                    align='right'
+                  >
+                    <Box margin='0'>
+                      <Button type='button' onClick={() => openEditUserDialog(row)}>
+                        编辑
+                      </Button>
+                      <Button type='button' color='error' onClick={(e) => openDeleteUserDialog(e, row)}>
+                        删除
+                      </Button>
+                    </Box>
+                  </StyledTableCell>
+                </StyledTableRow>
+
               ))}
           </TableBody>
         </Table>
@@ -195,8 +204,8 @@ const openDeleteUserDialog = (user: User) =>{
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <EditUserDialog key={selectedUser.id} user={selectedUser} open={editOpen} onClose={()=>{setEditOpen(false)}}></EditUserDialog>
-      <DeleteUserDialog open={deleteOpen} handleClose={() => setDeleteOpen(false)} handleDelete={deleteUser}></DeleteUserDialog>
+      <EditUserDialog key={selectedUser.id} user={selectedUser} open={editOpen} onClose={() => { setEditOpen(false) }}></EditUserDialog>
+      <DeleteUserPopover anchorEl={anchorEl} open={deleteOpen} onClose={handleClosePopover} onDelete={handleDeleteUser}></DeleteUserPopover>
     </Paper>
   );
 }
