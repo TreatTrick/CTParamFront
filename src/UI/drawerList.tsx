@@ -9,26 +9,21 @@ import {useNavigate } from 'react-router';
 import { List } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
 
-export default function DrawerListItems(){
-    const [selectedIndex, setSelectedIndex] = React.useState<number| undefined>();
+interface Props {
+    onListItemClick: (index: number, path: string) => void;
+    selectedIndex: number;
+};
 
-    const navigate = useNavigate();
+const DrawerListItems: React.FC<Props> = ({onListItemClick, selectedIndex}) => {
+
     
-    const handleListItemClick = (
-      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-      index: number,
-      path: string,
-    ) => {
-      setSelectedIndex(index);
-      navigate(path);
-    };
 
     return(
         <List component='nav'>
             <React.Fragment> 
                 <ListItemButton 
                     selected = {selectedIndex === 0}
-                    onClick = {(event) => handleListItemClick(event, 0, 'usermanage')}>
+                    onClick = {() => onListItemClick(0, 'usermanage')}>
                 <ListItemIcon>
                     <PeopleAltIcon/>
                 </ListItemIcon>
@@ -36,7 +31,7 @@ export default function DrawerListItems(){
                 </ListItemButton >  
                 <ListItemButton 
                     selected = {selectedIndex === 1}
-                    onClick = {(event) => handleListItemClick(event, 1, 'verify')}>
+                    onClick = {() => onListItemClick(1, 'verify')}>
                 <ListItemIcon>
                     <ListAltIcon/>
                 </ListItemIcon>
@@ -44,7 +39,7 @@ export default function DrawerListItems(){
                 </ListItemButton> 
                 <ListItemButton 
                     selected = {selectedIndex === 2}
-                    onClick = {(event) => handleListItemClick(event, 2, 'content')}>
+                    onClick = {() => onListItemClick(2, 'content')}>
                 <ListItemIcon>
                     <ViewListIcon/>
                 </ListItemIcon>
@@ -52,14 +47,15 @@ export default function DrawerListItems(){
                 </ListItemButton>  
                 <ListItemButton 
                     selected = {selectedIndex === 3}
-                    onClick = {(event) => handleListItemClick(event, 3, 'account')}>
+                    onClick = {() => onListItemClick(3, 'account')}>
                 <ListItemIcon>
                     <ManageAccountsIcon/>
                 </ListItemIcon>
-                <ListItemText primary="账户" />
+                <ListItemText primary="账户设置" />
                 </ListItemButton>
             </React.Fragment>
         </List> 
     );
 } 
-    
+  export default DrawerListItems;
+  

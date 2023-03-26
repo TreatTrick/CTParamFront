@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Copyright from './copyRight';
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import DrawerListItems from './drawerList';
 import SearchBar from './dashboardChildren/searchBar';
 import { User } from '../functionality/interactWithBackEnd';
@@ -87,6 +87,14 @@ React.useEffect(() => {
     
   }, []);
 
+const navigate = useNavigate();
+
+  const [selectedIndex, setSelectedIndex] = React.useState<number>(0);
+
+  const handleListItemClick = (index: number, path: string) => {
+      setSelectedIndex(index);
+      navigate(path);
+  };
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -135,7 +143,7 @@ React.useEffect(() => {
             </IconButton>
           </Toolbar>
           <Divider />
-            <DrawerListItems/>
+            <DrawerListItems onListItemClick={handleListItemClick} selectedIndex = {selectedIndex}/>
         </Drawer>
         <Box
           component="main"

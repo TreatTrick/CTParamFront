@@ -201,7 +201,6 @@ export default function StickyHeadTable() {
                     </Box>
                   </StyledTableCell>
                 </StyledTableRow>
-
               ))}
           </TableBody>
         </Table>

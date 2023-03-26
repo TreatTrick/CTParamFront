@@ -64,12 +64,11 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            登陆
+            登录
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            { accountState.hasError ?
               <TextField
-              error
+              error={accountState.hasError}
               margin="normal"
               required
               fullWidth
@@ -80,23 +79,8 @@ export default function SignIn() {
               autoFocus
               helperText={accountState.errorString}
               onChange={() => setAccountState({hasError: false, errorString: ''})}
-            />
-            :
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="account"
-              label="账号"
-              name="account"
-              autoComplete="account"
-              autoFocus
-            /> }     
-            {
-              passwordSate.hasError
-              ?
+            />   
               <TextField
-              error
               margin="normal"
               required
               fullWidth
@@ -105,28 +89,17 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={passwordSate.hasError}
               helperText={passwordSate.errorString}
               onChange={() => setPasswordState({hasError: false, errorString: ''})}
             />
-             :
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="密码"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            }
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              登陆
+              登录
             </Button>
             <Grid container>
               <Grid item xs>

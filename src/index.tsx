@@ -9,8 +9,9 @@ import DashBoard from './UI/dashBoard';
 import ErrorPage from './UI/errorPage';
 import Copyright from './UI/copyRight';
 import { Typography } from '@mui/material';
-import CustomizedTables from './UI/dashboardChildren/content';
-import StickyHeadTable from './UI/dashboardChildren/content';
+import CustomizedTables from './UI/dashboardChildren/userManage';
+import StickyHeadTable from './UI/dashboardChildren/userManage';
+import AccountSettings from './UI/dashboardChildren/account';
 
 const router = createBrowserRouter([
     {
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
                 },
                 {
                   path:"account",
-                  element:<Typography>account</Typography>
+                  element:<AccountSettings/>
                 }
               ],
             },
