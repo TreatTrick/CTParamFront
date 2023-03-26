@@ -10,6 +10,7 @@ import ErrorPage from './UI/errorPage';
 import Copyright from './UI/copyRight';
 import { Typography } from '@mui/material';
 import CustomizedTables from './UI/dashboardChildren/content';
+import StickyHeadTable from './UI/dashboardChildren/content';
 
 const router = createBrowserRouter([
     {
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
               children:[
                 {
                   path:"usermanage",  
-                  element:<CustomizedTables/>        
+                  element:<StickyHeadTable/>        
                 },
                 {
                   path:"verify",  

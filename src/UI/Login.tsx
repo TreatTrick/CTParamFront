@@ -120,11 +120,6 @@ export default function SignIn() {
               autoComplete="current-password"
             />
             }
-            
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
             <Button
               type="submit"
               fullWidth
@@ -139,11 +134,6 @@ export default function SignIn() {
                   忘记密码?
                 </Link>
               </Grid>
-              {/* <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid> */}
             </Grid>
           </Box>
         </Box>

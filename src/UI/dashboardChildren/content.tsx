@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 import { Box, Button, Toolbar } from '@mui/material';
 import SearchBar from './searchBar';
-import { User } from '../../functionality/interactWithBackEnd';
+import { fetchAllUsers, fetchUserList, User } from '../../functionality/interactWithBackEnd';
 import EditUserDialog from './editUser';
 import DeleteUserPopover from './deleteUserPopup';
 
@@ -95,6 +95,8 @@ export default function StickyHeadTable() {
   const [selectedUser, setSelecteduser] = React.useState<User>({ id: "id", name: "name", account: "account", telephone: "telephone" });
   const [editOpen, setEditOpen] = React.useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [userList, setUserList] = React.useState<User[]>(rows);
+
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -133,6 +135,15 @@ export default function StickyHeadTable() {
   };
 
   const onSearch = (keyWord: string) => {
+    // fetchUserList({param: keyWord}).then((userList) => {
+    //   setUserList(userList);
+    // });
+     const filteredRows = rows.filter((row) => {
+      return Object.values(row).some((value) => {
+        return value.toString().toLowerCase().includes(keyWord.toLowerCase());
+      });
+    });
+    setUserList(filteredRows);
 
   };
 
@@ -162,7 +173,7 @@ export default function StickyHeadTable() {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {userList
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
                 <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
@@ -198,7 +209,7 @@ export default function StickyHeadTable() {
       <TablePagination
         rowsPerPageOptions={[5, 25, 100]}
         component="div"
-        count={rows.length}
+        count={userList.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

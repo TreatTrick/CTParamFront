@@ -87,10 +87,6 @@ React.useEffect(() => {
     
   }, []);
 
-  
-  const onSearch = (searchWord: string) =>{
-
-  };
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -149,13 +145,13 @@ React.useEffect(() => {
                 ? theme.palette.grey[100]
                 : theme.palette.grey[900],
             flexGrow: 1,
-            height: '100%',
+            height: '100vh',
             width: '100%',
             overflow: 'auto',
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container sx={{ mt: 4, mb: 4 }}>
             <Outlet/>
             <Copyright sx={{ pt: 4 }} />
           </Container>
