@@ -19,11 +19,21 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Copyright from './copyRight';
 import { Outlet, useNavigate } from 'react-router';
-import DrawerListItems from './drawerList';
-import SearchBar from './dashboardChildren/searchBar';
 import { User } from '../functionality/interactWithBackEnd';
+import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 const drawerWidth: number = 240;
+
+export interface DashBoardListItem{
+  path: string,
+  name: string,
+  icon: React.ReactNode,
+}
+
+export interface DashBoardProps {
+  BoardName: string,
+  BoardListItems: DashBoardListItem[],
+}
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -75,7 +85,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+const DashboardContent: React.FC<DashBoardProps> = ({BoardName, BoardListItems})=> {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -125,7 +135,7 @@ const navigate = useNavigate();
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {BoardName}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -143,7 +153,20 @@ const navigate = useNavigate();
             </IconButton>
           </Toolbar>
           <Divider />
-            <DrawerListItems onListItemClick={handleListItemClick} selectedIndex = {selectedIndex}/>
+          <List component='nav'>
+            <React.Fragment> 
+                {BoardListItems.map((item, index) => (
+                  <ListItemButton 
+                  selected = {selectedIndex === index}
+                  onClick = {() => handleListItemClick(index, item.path)}>
+              <ListItemIcon>
+                  {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.name} />
+              </ListItemButton > 
+                ))}                             
+            </React.Fragment>
+        </List> 
         </Drawer>
         <Box
           component="main"
@@ -169,6 +192,4 @@ const navigate = useNavigate();
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
-}
+export default DashboardContent;

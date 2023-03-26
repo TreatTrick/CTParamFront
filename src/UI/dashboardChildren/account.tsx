@@ -50,8 +50,8 @@ const AccountSettings = () => {
           textColor="primary"
           centered
         >
-          <Tab label="账户" />
-          <Tab label="密码" />
+          <Tab label="修改账户" />
+          <Tab label="修改密码" />
         </Tabs>
       </Paper>
       <Paper sx={{padding:3, mt:2}}>
