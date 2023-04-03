@@ -13,6 +13,8 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router';
 import Copyright from './copyRight';
+import axios from 'axios';
+import config from '../functionality/frontend_config.json';
 
 interface stateDiscription{
   hasError: boolean,
@@ -22,30 +24,56 @@ interface stateDiscription{
 const theme = createTheme();
 
 export default function SignIn() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   const [accountState, setAccountState] = useState<stateDiscription>({hasError: false, errorString: ''});
   const [passwordSate, setPasswordState] = useState<stateDiscription>({hasError: false, errorString: ''});
+  const [adminLogin, setAdminLogin] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('account'),
-      password: data.get('password'),
-    });
-    let email = data.get('account');
-    let password = data.get('password');
-    if(!email){
+
+  React.useEffect(() => {
+    const checkAdminStatus = async () => {
+      try {
+        const response = await axios.get(config.server + config.is_admin, {params: {username: username}}, );
+        setIsAdmin(response.data.is_admin);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (username) {
+      checkAdminStatus();
+    }
+  }, [username]);
+
+
+  const handleLogin = (loginFunc: ()=>void) => {
+    if(!username){
       setAccountState({hasError: true, errorString: '账号不能为空'});
     }
     if(!password){
       setPasswordState({hasError: true, errorString: '密码不能为空'});
     }
-    if(!email || !password){
+    if(!username || !password){
         return;
     }
-    localStorage.setItem('token', '233456');
-    navigate('/');
+    let formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+    const sss = config.server + config.login
+    axios.post(config.server + config.login, formData)
+    .then((response) => {
+      if(response.status === 200){
+          loginFunc();
+      }else{
+          setPasswordState({hasError: true, errorString: '账号或密码错误'});
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      throw new Error(error);
+    });
   };
 
   return (
@@ -66,7 +94,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             登录
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box sx={{ mt: 1 }}>
               <TextField
               error={accountState.hasError}
               margin="normal"
@@ -74,33 +102,46 @@ export default function SignIn() {
               fullWidth
               id="account"
               label="账号"
-              name="account"
-              autoComplete="account"
+              value={username}
               autoFocus
               helperText={accountState.errorString}
-              onChange={() => setAccountState({hasError: false, errorString: ''})}
+              onChange={(event) => {
+                setAccountState({hasError: false, errorString: ''});
+                setUsername(event.target.value);
+              }}
             />   
               <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
               label="密码"
               type="password"
               id="password"
-              autoComplete="current-password"
+              value={password}
               error={passwordSate.hasError}
               helperText={passwordSate.errorString}
-              onChange={() => setPasswordState({hasError: false, errorString: ''})}
+              onChange={
+                (event) => {setPasswordState({hasError: false, errorString: ''});
+                setPassword(event.target.value);
+              }}
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
+              onClick={()=>handleLogin(() => navigate('/main/infofilling'))}
               sx={{ mt: 3, mb: 2 }}
             >
               登录
             </Button>
+            {adminLogin && 
+              <Button
+              fullWidth
+              variant="contained"
+              onClick={()=>handleLogin(() => navigate('/admin/usermanage'))}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              登录管理界面
+            </Button>}
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

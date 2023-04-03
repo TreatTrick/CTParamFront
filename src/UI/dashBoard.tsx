@@ -19,8 +19,15 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Copyright from './copyRight';
 import { Outlet, useNavigate } from 'react-router';
-import { User } from '../functionality/interactWithBackEnd';
 import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+
+interface User{
+  id: string,
+  user_name: string,
+  nick_name: string,
+  is_admin: boolean,
+  telephone?: string,
+};
 
 const drawerWidth: number = 240;
 
@@ -33,6 +40,7 @@ export interface DashBoardListItem{
 export interface DashBoardProps {
   BoardName: string,
   BoardListItems: DashBoardListItem[],
+  defaultOpen: boolean,
 }
 
 interface AppBarProps extends MuiAppBarProps {
@@ -85,8 +93,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-const DashboardContent: React.FC<DashBoardProps> = ({BoardName, BoardListItems})=> {
-  const [open, setOpen] = React.useState(true);
+const DashboardContent: React.FC<DashBoardProps> = ({BoardName, BoardListItems, defaultOpen})=> {
+  const [open, setOpen] = React.useState(defaultOpen);
   const toggleDrawer = () => {
     setOpen(!open);
   };

@@ -1,0 +1,12 @@
+{
+    "server":"http://127.0.0.1:5000",
+    "is_admin":"/auth/isadmin",
+    "login":"/auth/login",
+    "is_logged":"/auth/islogged",
+    "logout":"/auth/logout",
+    "add_user":"/user/adduser",
+    "update_user":"/user/updateuser",
+    "delete_user":"/user/deleteuser",
+    "get_user":"/user/getuser",
+    "upload_ct_param": "/ctparam/upload"
+}

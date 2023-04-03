@@ -61,7 +61,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "main/",
-        element: <DashboardContent BoardName='' BoardListItems={userlist} />,
+        element: <DashboardContent BoardName='' BoardListItems={userlist} defaultOpen={false}/>,
         children: [
           {
             path: "infofilling",
@@ -79,12 +79,13 @@ const router = createBrowserRouter([
           {
             path: "login",
             element: <SignIn />,
+            errorElement: <ErrorPage />,
           }
         ],
       },
       {
         path: "admin/",
-        element: <DashboardContent BoardName='' BoardListItems={adminList} />,
+        element: <DashboardContent BoardName='' BoardListItems={adminList} defaultOpen={true}/>,
         children: [
           {
             errorElement: <ErrorPage />,

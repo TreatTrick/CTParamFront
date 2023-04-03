@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
 import { Box, Button, createTheme, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useState } from 'react';
-import {User} from '../../functionality/interactWithBackEnd'
+import { User } from '../../functionality/dbTypes';
 
 interface EditUserDialogProps {
   user: User;

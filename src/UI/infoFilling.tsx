@@ -10,6 +10,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Navigate } from "react-router-dom";
+import JsonFileUploader from './jsonFileUploader';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const theme = createTheme();
 
@@ -85,13 +88,22 @@ function MainPage(){
     );
 }
 
-export default function InfoFilling(){
+const handleJsonUpload = (data: any) => {
+  console.log('JSON data uploaded:', data);
+};
 
-    const token = localStorage.getItem('token');
-    if(token){
-        return <MainPage/>
-    }
-    else{
-        return <Navigate to = 'auth/login'/>
-    }  
+
+export default function InfoFilling(){
+    useEffect(() => {
+    axios.get('/api/isloggin')
+    .then(res => {
+        if(!res.data){
+            return <Navigate to="/login" />;
+        }
+    })
+    .catch(err => console.log(err));
+}, []);
+
+
+    return <JsonFileUploader onJsonUpload={handleJsonUpload}/> 
 }

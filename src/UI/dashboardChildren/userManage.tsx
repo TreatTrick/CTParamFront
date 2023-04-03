@@ -10,9 +10,9 @@ import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 import { Box, Button, Toolbar } from '@mui/material';
 import SearchBar from './searchBar';
-import { fetchAllUsers, fetchUserList, User } from '../../functionality/interactWithBackEnd';
 import EditUserDialog from './editUser';
 import DeleteUserPopover from './deleteUserPopup';
+import { User } from '../../functionality/dbTypes';
 
 
 
