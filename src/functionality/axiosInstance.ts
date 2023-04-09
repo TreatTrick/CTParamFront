@@ -8,6 +8,6 @@ export function createAxiosInstance(baseURL: string): AxiosInstance {
     });
 }
 
-const api = createAxiosInstance(config.server);
+const api = createAxiosInstance('');
 
 export default api;

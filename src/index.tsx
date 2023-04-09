@@ -67,39 +67,35 @@ const userlist: DashBoardListItem[] = [
 const RootPage: React.FC = () => {
   const [isLogin, setIsLogin] = React.useState<boolean>(false);
   const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
-  
+  const navigate = useNavigate();
+
   const fetchData = async () => {
     try {
       const res = await api.get(config.is_login);
       if (res.status === 200) {
         setIsLogin(true);
         setIsAdmin(res.data.is_admin);
-      } else {
-        setIsLogin(false);
-      }
+        if (isLogin) {
+          if (isAdmin) {
+            navigate('/admin/usermanage');
+          } 
+          else{
+            navigate('/infofilling');
+          }
+        } 
+      } 
     } catch (err) {
       setIsLogin(false);
       console.log(err);
+      navigate('/auth/login');
     }
   };
 
   React.useEffect(() => {
     fetchData();
-  }, [isLogin, isAdmin]);
+  }, []);
 
-  return (
-    <>
-      {isLogin ? (
-        isAdmin ? (
-          <Navigate to="/admin/usermanage" replace />
-        ) : (
-          <DashboardContent BoardName='' BoardListItems={userlist} defaultOpen={false}/>
-        )
-      ) : (
-        <Navigate to="/auth/login" replace />
-      )}
-    </>
-  );
+  return (<DashboardContent BoardName='' BoardListItems={userlist} defaultOpen={false}/>);
 
 };
 
