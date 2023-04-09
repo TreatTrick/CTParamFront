@@ -2,7 +2,7 @@
     "server":"http://127.0.0.1:5000",
     "is_admin":"/auth/isadmin",
     "login":"/auth/login",
-    "is_logged":"/auth/islogged",
+    "is_login":"/auth/islogin",
     "logout":"/auth/logout",
     "add_user":"/user/adduser",
     "update_user":"/user/updateuser",

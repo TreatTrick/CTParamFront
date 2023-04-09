@@ -26,29 +26,12 @@ const theme = createTheme();
 export default function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
   const [accountState, setAccountState] = useState<stateDiscription>({hasError: false, errorString: ''});
   const [passwordSate, setPasswordState] = useState<stateDiscription>({hasError: false, errorString: ''});
-  const [adminLogin, setAdminLogin] = useState<boolean>(false);
   const navigate = useNavigate();
 
 
-  React.useEffect(() => {
-    const checkAdminStatus = async () => {
-      try {
-        const response = await axios.get(config.server + config.is_admin, {params: {username: username}}, );
-        setIsAdmin(response.data.is_admin);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    if (username) {
-      checkAdminStatus();
-    }
-  }, [username]);
-
-
-  const handleLogin = (loginFunc: ()=>void) => {
+  const handleLogin = () => {
     if(!username){
       setAccountState({hasError: true, errorString: '账号不能为空'});
     }
@@ -65,7 +48,12 @@ export default function SignIn() {
     axios.post(config.server + config.login, formData)
     .then((response) => {
       if(response.status === 200){
-          loginFunc();
+          if(response.data.is_admin === true){
+              navigate('/admin/usermanage');
+          }
+          else{
+              navigate('/user/infofilling');
+          }
       }else{
           setPasswordState({hasError: true, errorString: '账号或密码错误'});
       }
@@ -128,20 +116,11 @@ export default function SignIn() {
             <Button
               fullWidth
               variant="contained"
-              onClick={()=>handleLogin(() => navigate('/main/infofilling'))}
+              onClick={()=>handleLogin()}
               sx={{ mt: 3, mb: 2 }}
             >
               登录
             </Button>
-            {adminLogin && 
-              <Button
-              fullWidth
-              variant="contained"
-              onClick={()=>handleLogin(() => navigate('/admin/usermanage'))}
-              sx={{ mt: 3, mb: 2 }}
-            >
-              登录管理界面
-            </Button>}
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

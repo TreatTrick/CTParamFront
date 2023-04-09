@@ -4,7 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import SignIn from './UI/login';
 import InfoFilling from './UI/infoFilling';
-import { createBrowserRouter, Navigate, redirect, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, redirect, RouterProvider, useNavigate } from "react-router-dom";
 import DashBoard from './UI/dashBoard';
 import ErrorPage from './UI/errorPage';
 import Copyright from './UI/copyRight';
@@ -18,6 +18,9 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import axios from 'axios';
+import config from './functionality/frontend_config.json';
 
 const adminList: DashBoardListItem[] = [
   {
@@ -36,6 +39,11 @@ const adminList: DashBoardListItem[] = [
     icon: <ViewListIcon />,
   },
   {
+    path: "infofilling",
+    name: "数据上传",
+    icon: <UploadFileIcon />,
+  },
+  {
     path: "account",
     name: "账户设置",
     icon: <ManageAccountsIcon />,
@@ -46,7 +54,7 @@ const userlist: DashBoardListItem[] = [
   {
     path: "infofilling",
     name: "数据上传",
-    icon: <ListAltIcon />,
+    icon: <UploadFileIcon />,
   },
   {
     path: "account",
@@ -55,17 +63,93 @@ const userlist: DashBoardListItem[] = [
   }
 ];
 
+const RootPage: React.FC = () => {
+  const [isLogin, setIsLogin] = React.useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
+  
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(config.server + config.is_login);
+      if (res.status === 200) {
+        setIsLogin(true);
+        setIsAdmin(res.data.is_admin);
+      } else {
+        setIsLogin(false);
+      }
+    } catch (err) {
+      setIsLogin(false);
+      console.log(err);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchData();
+  }, [isLogin, isAdmin]);
+
+  return (
+    <>
+      {isLogin ? (
+        isAdmin ? (
+          <Navigate to="/admin/usermanage" replace />
+        ) : (
+          <DashboardContent BoardName='' BoardListItems={userlist} defaultOpen={false}/>
+        )
+      ) : (
+        <Navigate to="/auth/login" replace />
+      )}
+    </>
+  );
+
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <RootPage />,
     children: [
       {
-        path: "main/",
-        element: <DashboardContent BoardName='' BoardListItems={userlist} defaultOpen={false}/>,
+        index: true,
+        path: "infofilling",
+        element: <InfoFilling />
+      },
+      {
+        path: "account",
+        element: <AccountSettings />
+      }
+    ],
+  },
+  {
+    path: "/auth/",
+    children: [
+      {
+        path: "login",
+        element: <SignIn />,
+        errorElement: <ErrorPage />,
+      }
+    ],
+  },
+  {
+    path: "/admin/",
+    element: <DashboardContent BoardName='' BoardListItems={adminList} defaultOpen={true}/>,
+    children: [
+      {
+        errorElement: <ErrorPage />,
         children: [
           {
+            path: "usermanage",
+            element: <StickyHeadTable />
+          },
+          {
+            path: "verify",
+            element: <Typography>verify</Typography>
+          },
+          {
+            path: "content",
+            element: <Typography>content</Typography>
+          },
+          {
             path: "infofilling",
-            element: <InfoFilling />
+            element: <InfoFilling/>
           },
           {
             path: "account",
@@ -73,43 +157,6 @@ const router = createBrowserRouter([
           }
         ],
       },
-      {
-        path: "auth/",
-        children: [
-          {
-            path: "login",
-            element: <SignIn />,
-            errorElement: <ErrorPage />,
-          }
-        ],
-      },
-      {
-        path: "admin/",
-        element: <DashboardContent BoardName='' BoardListItems={adminList} defaultOpen={true}/>,
-        children: [
-          {
-            errorElement: <ErrorPage />,
-            children: [
-              {
-                path: "usermanage",
-                element: <StickyHeadTable />
-              },
-              {
-                path: "verify",
-                element: <Typography>verify</Typography>
-              },
-              {
-                path: "content",
-                element: <Typography>content</Typography>
-              },
-              {
-                path: "account",
-                element: <AccountSettings />
-              }
-            ],
-          },
-        ],
-      }
     ],
   },
 ]);

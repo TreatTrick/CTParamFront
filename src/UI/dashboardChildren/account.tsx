@@ -98,6 +98,7 @@ const AccountSettings = () => {
           <TextField
             fullWidth
             label="当前密码"
+            required
             type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
@@ -106,6 +107,7 @@ const AccountSettings = () => {
         <Box mb={2}>
           <TextField
             fullWidth
+            required
             label="新密码"
             type="password"
             value={newPassword}
@@ -115,6 +117,7 @@ const AccountSettings = () => {
         <Box mb={2}>
           <TextField
             fullWidth
+            required
             label="确认密码"
             type="password"
             value={confirmPassword}
