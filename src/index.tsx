@@ -75,14 +75,12 @@ const RootPage: React.FC = () => {
       if (res.status === 200) {
         setIsLogin(true);
         setIsAdmin(res.data.is_admin);
-        if (isLogin) {
-          if (isAdmin) {
-            navigate('/admin/usermanage');
-          } 
-          else{
-            navigate('/infofilling');
-          }
+        if (res.data.is_admin) {
+          navigate('/admin/usermanage');
         } 
+        else{
+          navigate('/infofilling');
+        }
       } 
     } catch (err) {
       setIsLogin(false);
@@ -96,7 +94,6 @@ const RootPage: React.FC = () => {
   }, []);
 
   return (<DashboardContent BoardName='' BoardListItems={userlist} defaultOpen={false}/>);
-
 };
 
 const router = createBrowserRouter([
