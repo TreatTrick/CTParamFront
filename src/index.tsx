@@ -21,6 +21,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import axios from 'axios';
 import config from './functionality/frontend_config.json';
+import api from './functionality/axiosInstance';
 
 const adminList: DashBoardListItem[] = [
   {
@@ -69,7 +70,7 @@ const RootPage: React.FC = () => {
   
   const fetchData = async () => {
     try {
-      const res = await axios.get(config.server + config.is_login);
+      const res = await api.get(config.is_login);
       if (res.status === 200) {
         setIsLogin(true);
         setIsAdmin(res.data.is_admin);
@@ -108,7 +109,6 @@ const router = createBrowserRouter([
     element: <RootPage />,
     children: [
       {
-        index: true,
         path: "infofilling",
         element: <InfoFilling />
       },

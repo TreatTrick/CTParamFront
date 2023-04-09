@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router';
 import Copyright from './copyRight';
 import axios from 'axios';
 import config from '../functionality/frontend_config.json';
+import api from '../functionality/axiosInstance';
 
 interface stateDiscription{
   hasError: boolean,
@@ -44,21 +45,25 @@ export default function SignIn() {
     let formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
-    const sss = config.server + config.login
-    axios.post(config.server + config.login, formData)
+    api.post(config.login, formData)
     .then((response) => {
-      if(response.status === 200){
-          if(response.data.is_admin === true){
-              navigate('/admin/usermanage');
-          }
-          else{
-              navigate('/user/infofilling');
-          }
-      }else{
-          setPasswordState({hasError: true, errorString: '账号或密码错误'});
-      }
+        if(response.data.is_admin === true){
+            navigate('/admin/usermanage');
+        }
+        else{
+            navigate('/infofilling');
+        }
     })
     .catch((error) => {
+      if(error.response.status === 401)
+      {
+        if(error.response.data.errorCode === 1){
+          setAccountState({hasError: true, errorString: '账号不存在'});
+        }
+        else if(error.response.data.errorCode === 2){  
+          setPasswordState({hasError: true, errorString: '密码错误'});
+        }
+      }
       console.log(error);
       throw new Error(error);
     });
