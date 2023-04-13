@@ -8,14 +8,18 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
-import { Alert, Box, Button, Snackbar, Toolbar } from '@mui/material';
+import { Alert, Box, Button, Checkbox, Container, Snackbar, Toolbar, Typography } from '@mui/material';
 import SearchBar from './searchBar';
 import EditUserDialog from './editUser';
 import DeleteUserPopover from './deleteUserPopup';
-import { User, UserColumns } from '../../functionality/dbTypes';
+import { LoginUser, User, UserColumns } from '../../functionality/dbTypes';
 import api from '../../functionality/axiosInstance';
 import config from '../../functionality/frontend_config.json';
 import AddUserDialog from './addUserDialog';
+import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Tooltip from '@mui/material/Tooltip';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'; import { Person } from '@mui/icons-material';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -49,6 +53,7 @@ export default function StickyHeadTable() {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openAddUserDialog, setOpenAddUserDialog] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
+  const [isTooltipOpen, setIsTooltipOpem] = React.useState(false);
 
   React.useEffect(() => {
     api.get(config.get_user, {
@@ -98,7 +103,16 @@ export default function StickyHeadTable() {
   };
 
   const handleDeleteUser = () => {
-    console.log('User deleted');
+    api.delete(config.delete_user + '/' + selectedUser.id)
+      .then((response) => {
+        setAlertMessage(response.data.msg);
+        setOpenSnackbar(true);
+        setUserList(userList.filter((user) => user.id !== selectedUser.id));
+      })
+      .catch((error) => {
+        setAlertMessage(error.response.data.msg);
+        setOpenSnackbar(true);
+      });
     setAnchorEl(null);
     setDeleteOpen(false);
   };
@@ -124,15 +138,16 @@ export default function StickyHeadTable() {
 
   const handleAddUser = async (user: User) => {
     let formData = new FormData();
-    formData.append('username', user.user_name);
+    formData.append('user_name', user.user_name);
     formData.append('nick_name', user.nick_name ? user.nick_name : '');
     formData.append('telephone', user.telephone ? user.telephone : '');
-    formData.append('password', user.password? user.password : '');
+    formData.append('password', user.password ? user.password : '');
     formData.append('is_admin', user.is_admin ? '1' : '0');
     api.post(config.add_user, formData)
       .then((response) => {
         setAlertMessage('新增成功');
         setOpenSnackbar(true);
+        setUserList([...userList, user]);
       })
       .catch((error) => {
         setAlertMessage('新增失败: ' + error.response.data.msg);
@@ -144,7 +159,7 @@ export default function StickyHeadTable() {
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Button sx={{ margin: '0 10px' }} variant='outlined' color='primary' onClick={() => setOpenAddUserDialog(true)}>
-          新增
+          新增用户
         </Button>
         <Box sx={{ flexGrow: 1 }}></Box>
         <Box margin='10px' sx={{ width: '50%' }}>
@@ -163,6 +178,12 @@ export default function StickyHeadTable() {
                   {column.label}
                 </StyledTableCell>
               ))}
+              <StyledTableCell
+                key='isAdmin' align='center'
+                sx={{ minWidth: 120 }}
+              >
+                是否管理员
+              </StyledTableCell>
               <StyledTableCell align='right'
                 key='operation'
               >
@@ -177,21 +198,53 @@ export default function StickyHeadTable() {
                   const value = row[column.id];
                   return (
                     <StyledTableCell key={column.id} align={column.align}>
-                      {value}
+                      {
+                        row.id === LoginUser.id && column.id === 'user_name'
+                          ?
+                          <Box display='flex'>
+                            <Typography>{value}</Typography>
+                            <Tooltip title='当前登陆用户' arrow>
+                              <AdminPanelSettingsIcon sx={{ fontSize: 'middle', margin: '1px' }} />
+                            </Tooltip>
+                          </Box>
+                          :
+                          value
+                      }
                     </StyledTableCell>
                   );
                 })}
+                <StyledTableCell padding="checkbox" align='center'>
+                  {row.is_admin ? <CheckCircleIcon color='success' /> : <CancelIcon color='warning' />}
+                </StyledTableCell>
                 <StyledTableCell padding='none'
                   key={UserColumns.length}
                   align='right'
                 >
                   <Box margin='0'>
-                    <Button type='button' onClick={() => openEditUserDialog(row)}>
-                      编辑
-                    </Button>
-                    <Button type='button' color='error' onClick={(e) => openDeleteUserDialog(e, row)}>
-                      删除
-                    </Button>
+                    <Tooltip title={row.id === LoginUser.id ? '无法编辑自身' : ''} arrow>
+                      <Box component="span" display="inline" margin={0}>
+                        <Button
+                          disabled={row.id === LoginUser.id}
+                          type="button"
+                          onClick={() => openEditUserDialog(row)}
+                        >
+                          编辑
+                        </Button>
+                      </Box>
+                    </Tooltip>
+                    <Tooltip title={row.id === LoginUser.id ? '无法删除自身' : ''} arrow>
+                      <Box component="span" display="inline" margin={0}>
+                        <Button
+                          disabled={row.id === LoginUser.id}
+                          type="button"
+                          color="error"
+                          onClick={(e) => openDeleteUserDialog(e, row)}
+                        >
+                          删除
+                        </Button>
+                      </Box>
+                    </Tooltip>
+                    
                   </Box>
                 </StyledTableCell>
               </StyledTableRow>

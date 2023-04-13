@@ -13,6 +13,8 @@ import {
     createTheme,
 } from '@mui/material';
 import { User } from '../../functionality/dbTypes';
+import api from '../../functionality/axiosInstance';
+import config from '../../functionality/frontend_config.json';
 
 const mdTheme = createTheme();
 
@@ -28,8 +30,15 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, onClose, onSubmit }
     const [password, setPassword] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
     const [telephone, setTelephone] = useState('');
+    const [isUserNameError, setIsUserNameError] = useState(false);
+    const [userNameError, setUserNameError] = useState('');
 
     const handleSubmit = () => {
+        if(userName === '') {
+            setIsUserNameError(true);
+            setUserNameError('用户名不能为空');
+            return;
+        }
         onSubmit({ user_name: userName, nick_name: nickName, is_admin: isAdmin, password: password, telephone: telephone });
         setUserName('');
         setNickName('');
@@ -38,13 +47,21 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, onClose, onSubmit }
         onClose();
     };
 
-    const hadleUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        api.get(config.is_user_exist, {params:{user_name: event.target.value}})
+        .then((res) => {
+            setIsUserNameError(true);
+            setUserNameError('用户名已存在');
+        })
+        .catch((err) => {
+            setIsUserNameError(false);
+        });
         setUserName(event.target.value);
     };
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle sx={{backgroundColor: mdTheme.palette.primary.light, color: mdTheme.palette.common.white}}>添加用户</DialogTitle>
+            <DialogTitle sx={{backgroundColor: mdTheme.palette.primary.light, color: mdTheme.palette.common.white}}>新增用户</DialogTitle>
             <DialogContent>
                 <DialogContentText>请填写以下信息</DialogContentText>
                 <TextField
@@ -55,7 +72,9 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, onClose, onSubmit }
                     type="text"
                     fullWidth
                     value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    error={isUserNameError}
+                    helperText={isUserNameError ? userNameError : ''}
+                    onChange={(e) => handleUserNameChange(e)}
                 />
                 <TextField
                     margin="dense"

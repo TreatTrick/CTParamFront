@@ -16,6 +16,7 @@ import Copyright from './copyRight';
 import axios from 'axios';
 import config from '../functionality/frontend_config.json';
 import api from '../functionality/axiosInstance';
+import {setLoginUser } from '../functionality/dbTypes';
 
 interface stateDiscription{
   hasError: boolean,
@@ -47,6 +48,7 @@ export default function SignIn() {
     formData.append('password', password);
     api.post(config.login, formData)
     .then((response) => {
+        setLoginUser(response.data);
         if(response.data.is_admin === true){
             navigate('/admin/usermanage');
         }

@@ -7,6 +7,15 @@ export interface User{
     is_admin: boolean,
   };
 
+export let LoginUser: User = {
+  user_name: '',
+  is_admin: false,
+}
+
+export const setLoginUser = (user: User): void =>{
+    LoginUser = user;
+} 
+
 export interface UserColumn {
     id: 'user_name' | 'nick_name' | 'telephone' | 'is_admin';
     label: string;
@@ -18,7 +27,8 @@ export  const UserColumns: readonly UserColumn[] = [
     {
       id:'user_name',
       label: '用户名',
-      minWidth: 170 },
+      minWidth: 170 
+    },
     {
       id:'nick_name',
       label: '昵称',
