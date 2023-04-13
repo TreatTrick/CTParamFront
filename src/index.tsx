@@ -65,16 +65,12 @@ const userlist: DashBoardListItem[] = [
 ];
 
 const RootPage: React.FC = () => {
-  const [isLogin, setIsLogin] = React.useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const res = await api.get(config.is_login);
       if (res.status === 200) {
-        setIsLogin(true);
-        setIsAdmin(res.data.is_admin);
         if (res.data.is_admin) {
           navigate('/admin/usermanage');
         } 
@@ -83,7 +79,6 @@ const RootPage: React.FC = () => {
         }
       } 
     } catch (err) {
-      setIsLogin(false);
       console.log(err);
       navigate('/auth/login');
     }
@@ -95,6 +90,36 @@ const RootPage: React.FC = () => {
 
   return (<DashboardContent BoardName='' BoardListItems={userlist} defaultOpen={false}/>);
 };
+
+
+const AdminPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const fetchData = async () => {
+    try {
+      const res = await api.get(config.is_login);
+      if (res.status === 200) {
+        if (res.data.is_admin) {
+          navigate('/admin/usermanage');
+        } 
+        else{
+          navigate('/infofilling');
+        }
+      } 
+    } catch (err) {
+      console.log(err);
+      navigate('/auth/login');
+    }
+  };
+
+  React.useEffect(() => {
+    fetchData();
+  }, []);
+
+  return (<DashboardContent BoardName='' BoardListItems={adminList} defaultOpen={true}/>);
+};
+
+
 
 const router = createBrowserRouter([
   {
@@ -123,7 +148,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin/",
-    element: <DashboardContent BoardName='' BoardListItems={adminList} defaultOpen={true}/>,
+    element: <AdminPage />,
     children: [
       {
         errorElement: <ErrorPage />,

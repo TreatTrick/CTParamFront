@@ -20,14 +20,5 @@ const handleJsonUpload = (data: any) => {
 
 
 export default function InfoFilling(){
-    useEffect(() => {
-    axios.get('/api/isloggin')
-    .then(res => {
-        if(!res.data){
-            return <Navigate to="/login" />;
-        }
-    })
-    .catch(err => console.log(err));
-}, []);
     return <JsonFileUploader onJsonUpload={handleJsonUpload}/> 
 }

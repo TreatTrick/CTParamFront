@@ -12,8 +12,8 @@ interface EditUserDialogProps {
 const mdTheme = createTheme();
 
 const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, open, onClose }) => {
-  const [name, setName] = useState<string>(user.name);
-  const [account, setAccount] = useState<string>(user.account);
+  const [name, setName] = useState<string>(user.nick_name? user.nick_name : '');
+  const [account, setAccount] = useState<string>(user.user_name);
   const [telephone, setTelefone] = useState<string | undefined>(user.telephone);
   const [password, setPassword] = useState<string | undefined>();
 
