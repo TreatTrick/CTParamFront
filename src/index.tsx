@@ -11,7 +11,6 @@ import Copyright from './UI/copyRight';
 import { Typography } from '@mui/material';
 import CustomizedTables from './UI/dashboardChildren/userManage';
 import StickyHeadTable from './UI/dashboardChildren/userManage';
-import AccountSettings from './UI/dashboardChildren/account';
 import DashboardContent from './UI/dashBoard';
 import { DashBoardListItem } from './UI/dashBoard';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -22,6 +21,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import axios from 'axios';
 import config from './functionality/frontend_config.json';
 import api from './functionality/axiosInstance';
+import Account from './UI/dashboardChildren/accountSetting';
 
 const adminList: DashBoardListItem[] = [
   {
@@ -132,7 +132,7 @@ const router = createBrowserRouter([
       },
       {
         path: "account",
-        element: <AccountSettings />
+        element: <Account />
       }
     ],
   },
@@ -171,7 +171,7 @@ const router = createBrowserRouter([
           },
           {
             path: "account",
-            element: <AccountSettings />
+            element: <Account />
           }
         ],
       },

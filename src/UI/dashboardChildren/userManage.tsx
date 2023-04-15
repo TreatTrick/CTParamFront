@@ -54,6 +54,7 @@ export default function StickyHeadTable() {
   const [openAddUserDialog, setOpenAddUserDialog] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
   const [isTooltipOpen, setIsTooltipOpem] = React.useState(false);
+  const [alertColor, setAlertColor] = React.useState<'success' | 'error'>('success');
 
   React.useEffect(() => {
     api.get(config.get_user, {
@@ -106,11 +107,13 @@ export default function StickyHeadTable() {
     api.delete(config.delete_user + '/' + selectedUser.id)
       .then((response) => {
         setAlertMessage(response.data.msg);
+        setAlertColor('success');
         setOpenSnackbar(true);
         setUserList(userList.filter((user) => user.id !== selectedUser.id));
       })
       .catch((error) => {
         setAlertMessage(error.response.data.msg);
+        setAlertColor('error');
         setOpenSnackbar(true);
       });
     setAnchorEl(null);
@@ -146,11 +149,13 @@ export default function StickyHeadTable() {
     api.post(config.add_user, formData)
       .then((response) => {
         setAlertMessage('新增成功');
+        setAlertColor('success');
         setOpenSnackbar(true);
         setUserList([...userList, user]);
       })
       .catch((error) => {
         setAlertMessage('新增失败: ' + error.response.data.msg);
+        setAlertColor('error');
         setOpenSnackbar(true);
       });
   };
@@ -221,7 +226,7 @@ export default function StickyHeadTable() {
                   align='right'
                 >
                   <Box margin='0'>
-                    <Tooltip title={row.id === LoginUser.id ? '无法编辑自身' : ''} arrow>
+                    <Tooltip title={row.id === LoginUser.id ? '无法在此处编辑自身' : ''} arrow>
                       <Box component="span" display="inline" margin={0}>
                         <Button
                           disabled={row.id === LoginUser.id}
@@ -232,7 +237,7 @@ export default function StickyHeadTable() {
                         </Button>
                       </Box>
                     </Tooltip>
-                    <Tooltip title={row.id === LoginUser.id ? '无法删除自身' : ''} arrow>
+                    <Tooltip title={row.id === LoginUser.id ? '无法在此处删除自身' : ''} arrow>
                       <Box component="span" display="inline" margin={0}>
                         <Button
                           disabled={row.id === LoginUser.id}
@@ -264,8 +269,8 @@ export default function StickyHeadTable() {
       <EditUserDialog key={selectedUser.id} user={selectedUser} open={editOpen} onClose={() => { setEditOpen(false) }}></EditUserDialog>
       <DeleteUserPopover anchorEl={anchorEl} open={deleteOpen} onClose={handleClosePopover} onDelete={handleDeleteUser}></DeleteUserPopover>
       <AddUserDialog onSubmit={handleAddUser} onClose={() => setOpenAddUserDialog(false)} open={openAddUserDialog}></AddUserDialog>
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={(e, r) => handleCloseSnackbar(e, r)}>
-        <Alert onClose={(e) => handleCloseSnackbar(e)} severity="success" sx={{ width: '100%' }}>
+      <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={(e, r) => handleCloseSnackbar(e, r)}>
+        <Alert onClose={(e) => handleCloseSnackbar(e)} severity={alertColor} sx={{ width: '100%' }}>
           {alertMessage}
         </Alert>
       </Snackbar>

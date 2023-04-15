@@ -9,5 +9,6 @@
     "delete_user":"/user/deleteuser",
     "get_user":"/user/getuser",
     "upload_ct_param": "/ctparam/upload",
-    "is_user_exist":"/user/isuserexist"
+    "is_user_exist":"/user/isuserexist",
+    "change_password":"/auth/changepassword"
 }
