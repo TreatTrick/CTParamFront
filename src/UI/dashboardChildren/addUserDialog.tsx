@@ -109,7 +109,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, onClose, onSubmit }
                     }
                     label="是否是管理员"
                 />
-
             </DialogContent>
             <DialogActions>
                 <Button variant='outlined' onClick={onClose}>取消</Button>
