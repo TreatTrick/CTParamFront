@@ -40,21 +40,15 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
 
   const handleUserChange = async (prop: keyof User, value: string | boolean) => {
     setEditUser({ ...editUser, [prop]: value });
-    if (prop === "user_name") {
-      if (value === "") {
-        setIsUserNameError(true);
-        setUserNameError("用户名不能为空");
-        return;
-      }
+    if(prop === "user_name") {
       try {
         await api.get(config.is_user_exist, { params: { user_name: value } });
-      } catch (err: any) {
+        setIsUserNameError(false);
+        setUserNameError("");
+      } catch (err) {
         setIsUserNameError(true);
-        setUserNameError(err.response.data.msg);
-        return;
+        setUserNameError("用户名已存在");
       }
-      setIsUserNameError(false);
-      setUserNameError("");
     }
   };
 

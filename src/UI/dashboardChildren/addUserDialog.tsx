@@ -50,11 +50,12 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, onClose, onSubmit }
     const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         api.get(config.is_user_exist, {params:{user_name: event.target.value}})
         .then((res) => {
-            setIsUserNameError(true);
-            setUserNameError('用户名已存在');
+            setIsUserNameError(false);
+            setUserNameError('');
         })
         .catch((err) => {
-            setIsUserNameError(false);
+            setIsUserNameError(true);
+            setUserNameError('用户名已存在');
         });
         setUserName(event.target.value);
     };

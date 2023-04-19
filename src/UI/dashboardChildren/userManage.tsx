@@ -29,7 +29,6 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Tooltip from "@mui/material/Tooltip";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import { Person } from "@mui/icons-material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -62,6 +61,7 @@ export default function StickyHeadTable() {
   const [userList, setUserList] = React.useState<User[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [pageCount, setPageCount] = React.useState(1);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openAddUserDialog, setOpenAddUserDialog] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState("");
@@ -76,6 +76,7 @@ export default function StickyHeadTable() {
         params: {
           pagenum: page,
           pagesize: rowsPerPage,
+          keyword: "",
         },
       })
       .then((response) => {
@@ -87,6 +88,7 @@ export default function StickyHeadTable() {
           telephone: user.telephone,
         }));
         setUserList(ul);
+        setPageCount(response.data.total);
       })
       .catch((error) => {
         console.log(error);
@@ -143,13 +145,23 @@ export default function StickyHeadTable() {
     setDeleteOpen(false);
   };
 
-  const onSearch = (keyWord: string) => {
-    const filteredUserList = userList.filter((user) => {
-      return Object.values(user).some((value) => {
-        return value.toString().toLowerCase().includes(keyWord.toLowerCase());
+  const onSearch = async (keyWord: string) => {
+    try {
+      const response = await api.get(config.get_user, {
+        params: { pagesize: rowsPerPage, pagenum: page, keyword: keyWord },
       });
-    });
-    setUserList(filteredUserList);
+      const ul: User[] = response.data.array.map((user: any) => ({
+        id: user.id,
+        user_name: user.user_name,
+        nick_name: user.nick_name,
+        is_admin: user.is_admin,
+        telephone: user.telephone,
+      }));
+      setUserList(ul);
+      setPageCount(response.data.total);
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   const handleCloseSnackbar = (
@@ -323,13 +335,17 @@ export default function StickyHeadTable() {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 25, 100]}
+        rowsPerPageOptions={[10, 20, 50]}
         component="div"
-        count={userList.length}
+        count={pageCount}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="每页行数:"
+        labelDisplayedRows={({ from, to, count }) =>
+          `${from}-${to} 共 ${count}`
+        }
       />
       <EditUserDialog
         isEditSelf={false}
